@@ -8,6 +8,7 @@ class Home extends React.Component {
     this.state = {
       counter: 0,
       isRunning: true,
+      inputValue: 0,
     };
   }
 
@@ -20,7 +21,6 @@ class Home extends React.Component {
   }
 
   startInterval() {
-
     this.stopInterval();
 
     this.intervalId = setInterval(() => {
@@ -42,6 +42,12 @@ class Home extends React.Component {
       );
 
       this.setState((prevState) => ({ counter: prevState.counter + 1 }));
+
+
+      if (this.state.counter  === this.state.inputValue ) {
+        alert("¡El contador ha alcanzado el valor introducido!");
+        this.stopInterval();
+      }
     }, 1000);
   }
 
@@ -63,6 +69,16 @@ class Home extends React.Component {
     this.setState({ isRunning: true });
   }
 
+  handleInputChange(event) {
+
+    this.setState({ inputValue: parseInt(event.target.value, 10)  || 0  });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.startInterval();
+  }
+
   render() {
     let six = Math.floor((this.state.counter / 100000) % 10);
     let five = Math.floor((this.state.counter / 10000) % 10);
@@ -81,15 +97,46 @@ class Home extends React.Component {
           digitFive={five}
           digitSix={six}
         />
+       <div className="d-flex justify-content-center mt-2">
+          <form onSubmit={(e) => this.handleSubmit(e)}>
+            <label className="me-2" htmlFor="numeroInput">Introduzca un valor para parar el tiempo y espere ... </label>
+            <input
+              type="number"
+              id="numeroInput"
+              name="numeroInput"
+              value={this.state.inputValue}
+              onChange={(e) => this.handleInputChange(e)}
+              required
+            />
+            <input type="submit" value="Enviar" />
+          </form>
+       </div>
+
         <div className="d-flex justify-content-center m-5">
-          <div className="mx-2"><button className="btn btn-warning" onClick={() => this.pauseCounter()}>Stop</button></div>
-          <div className="mx-2"><button className="btn btn-success" onClick={() => this.resumeCounter()}>Resume</button></div>
-          <div className="mx-2"><button className="btn btn-danger" onClick={() => this.resetCounter()}>Reset</button></div>
-            <form>
-              <label for="numeroInput">Número:</label>
-              <input type="number" id="numeroInput" name="numeroInput" required/>
-              <input type="submit" value="Enviar"/>
-            </form>
+          <div className="mx-2">
+            <button
+              className="btn btn-warning"
+              onClick={() => this.pauseCounter()}
+            >
+              Stop
+            </button>
+          </div>
+          <div className="mx-2">
+            <button
+              className="btn btn-success"
+              onClick={() => this.resumeCounter()}
+            >
+              Resume
+            </button>
+          </div>
+          <div className="mx-2">
+            <button
+              className="btn btn-danger"
+              onClick={() => this.resetCounter()}
+            >
+              Reset
+            </button>
+          </div>
         </div>
       </div>
     );
